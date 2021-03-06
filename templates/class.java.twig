@@ -1,0 +1,107 @@
+package {{ obj.packageName }};
+
+import me.scolastico.mysql.manager.MysqlManager;
+import me.scolastico.mysql.manager.exceptions.NoDataException;
+import me.scolastico.mysql.manager.exceptions.NoFieldsException;
+import me.scolastico.mysql.manager.exceptions.NotATableException;
+import me.scolastico.mysql.manager.exceptions.NotSavedEntryException;
+import me.scolastico.mysql.manager.interfaces.Annotations.Table;
+import me.scolastico.mysql.manager.interfaces.Annotations.TableEntry;
+import me.scolastico.mysql.manager.interfaces.Annotations.TableId;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+{% for field in obj.fields %}{% if field.type == "5" %}
+
+import {{ field.package }}.{{ field.class }};
+
+{% endif %}{% endfor %}
+
+@Table()
+public class {{ obj.className }} {
+
+  public static void generateTable(MysqlManager manager) throws SQLException, NotATableException, NoSuchMethodException, NotSavedEntryException, NoFieldsException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchFieldException, NoDataException {
+    manager.generateTable(new {{ obj.className }}(manager));
+  }
+
+  public static {{ obj.className }} getById(Long id, MysqlManager mysqlManager) throws SQLException, NotATableException, IllegalAccessException, NoSuchFieldException, InvocationTargetException, NoSuchMethodException {
+    Object obj = mysqlManager.getFromTableById(new {{ obj.className }}(mysqlManager), id);
+    if (obj != null) {
+      return ({{ obj.className }}) obj;
+    }
+    return null;
+  }
+
+  public static {{ obj.className }}[] getAll(MysqlManager mysqlManager) throws IllegalAccessException, NotATableException, InstantiationException, SQLException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException {
+    Object[] objects = mysqlManager.getAllFromTable(new {{ obj.className }}(mysqlManager));
+    ArrayList<{{ obj.className }}> dataHolders = new ArrayList<>();
+    for (Object obj:objects) {
+      dataHolders.add(({{ obj.className }}) obj);
+    }
+    return dataHolders.toArray(new {{ obj.className }}[0]);
+  }
+
+  {% for field in obj.fields %}
+
+  public static {{ obj.className }}[] searchBy{{ field.name[:1]|upper ~ field.name[1:] }}({% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} {{ field.name }}, MysqlManager mysqlManager) throws SQLException, NotATableException, NoSuchMethodException, NoSuchFieldException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    Object[] objects = mysqlManager.getFromTableBySearch(new {{ obj.className }}(mysqlManager), "{{ field.name }}", {{ field.name }});
+    ArrayList<{{ obj.className }}> dataHolders = new ArrayList<>();
+    for (Object obj:objects) {
+      dataHolders.add(({{ obj.className }}) obj);
+    }
+    return dataHolders.toArray(new {{ obj.className }}[0]);
+  }
+
+  {% endfor %}
+
+  public static void deleteTable(MysqlManager manager) throws SQLException, NotATableException, NoSuchMethodException, NoSuchFieldException, InstantiationException, IllegalAccessException, InvocationTargetException, NotSavedEntryException {
+    manager.deleteTable(new {{ obj.className }}(manager));
+  }
+
+  public void delete() throws SQLException, NotATableException, NotSavedEntryException {
+    if (id == null) throw new NotSavedEntryException();
+    mysqlManager.delete(this, id);
+  }
+
+  public void update() throws NotSavedEntryException, SQLException, NoSuchFieldException, IllegalAccessException, NoFieldsException, NotATableException, NoSuchMethodException, InvocationTargetException, NoDataException {
+    if (id == null) throw new NotSavedEntryException();
+    mysqlManager.updateTable(this);
+  }
+
+  public void save() throws SQLException, NotATableException, NoFieldsException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, NoDataException {
+    id = mysqlManager.saveTable(this);
+  }
+
+  public {{ obj.className }}(MysqlManager mysqlManager) {
+    this.mysqlManager = mysqlManager;
+  }
+
+  public {{ obj.className }}({% for field in obj.fields %}{% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} {{ field.name }}, {% endfor %}MysqlManager mysqlManager) {
+    {% for field in obj.fields %}
+    this.{{ field.name }} = {{ field.name }};
+    {% endfor %}
+    this.mysqlManager = mysqlManager;
+  }
+
+  @TableId
+  private Long id = null;
+
+  private final MysqlManager mysqlManager;
+
+  {% for field in obj.fields %}
+
+  @TableEntry()
+  private {% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} {{ field.name }} = {% if field.type == "1" %}"{{ field.value }}"{% elseif field.type == "5" %}new {{ field.class }}(){% else %}{{ field.value }}{% endif %};
+
+  public {% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} get{{ field.name[:1]|upper ~ field.name[1:] }}() {
+    return {{ field.name }};
+  }
+
+  public void set{{ field.name[:1]|upper ~ field.name[1:] }}({% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} s) {
+    this.{{ field.name }} = {{ field.name }};
+  }
+
+  {% endfor %}
+
+}
