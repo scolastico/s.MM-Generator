@@ -92,13 +92,13 @@ public class {{ obj.className }} {
   {% for field in obj.fields %}
 
   @TableEntry()
-  private {% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} {{ field.name }} = {% if field.type == "1" %}"{{ field.value }}"{% elseif field.type == "5" %}new {{ field.class }}(){% else %}{{ field.value }}{% endif %};
+  private {% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} {{ field.name }} = {% if field.type == "1" %}"{{ field.value }}"{% elseif field.type == "5" %}new {{ field.class }}(){% elseif field.type == "3" %}{{ field.value }}L{% elseif field.type == "4" %}{{ field.value }}D{% else %}{{ field.value }}{% endif %};
 
   public {% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} get{{ field.name[:1]|upper ~ field.name[1:] }}() {
     return {{ field.name }};
   }
 
-  public void set{{ field.name[:1]|upper ~ field.name[1:] }}({% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} s) {
+  public void set{{ field.name[:1]|upper ~ field.name[1:] }}({% if field.type == "1" %}String{% elseif field.type == "2" %}Integer{% elseif field.type == "3" %}Long{% elseif field.type == "4" %}Double{% else %}{{ field.class }}{% endif %} {{ field.name }}) {
     this.{{ field.name }} = {{ field.name }};
   }
 
