@@ -24,11 +24,11 @@
         <form>
             <div class="form-row" style="margin-top: 50px;">
                 <div class="col col-md-2"><label class="col-form-label">Package Name:&nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-bss-tooltip="" title="Please write here where you want to place your generated class."></i></label></div>
-                <div class="col"><input {% if obj is defined %}value="{{ obj.className }}" {% endif %}class="form-control" type="text" id="package-name" placeholder="me.developer.databases"></div>
+                <div class="col"><input {% if obj is defined %}value="{{ obj.packageName }}" {% endif %}class="form-control" type="text" id="package-name" placeholder="me.developer.databases"></div>
             </div>
             <div class="form-row" style="margin-top: 10px;">
                 <div class="col col-md-2"><label class="col-form-label">Table Name:&nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-bss-tooltip="" title="Please enter here your table name. It will be the same as the class name."></i></label></div>
-                <div class="col"><input {% if obj is defined %}value="{{ obj.packageName }}" {% endif %}class="form-control" type="text" id="table-name" placeholder="MyGreatTable"></div>
+                <div class="col"><input {% if obj is defined %}value="{{ obj.className }}" {% endif %}class="form-control" type="text" id="table-name" placeholder="MyGreatTable"></div>
             </div>
             <div class="text-right" style="margin-top: 10px;"><button class="btn btn-primary" type="button" onclick="create();">Create Field</button></div>
             <div class="card bg-secondary" style="margin-top: 10px;" id="fields">
