@@ -13,7 +13,7 @@ class GeneratorController extends AbstractController
     /**
      * @Route("/api/generate", name="generator")
      */
-    public function number(): Response
+    public function generate(): Response
     {
         $response = new Response();
         $response->setStatusCode(Response::HTTP_BAD_REQUEST);
@@ -29,7 +29,7 @@ class GeneratorController extends AbstractController
             return $response;
         }
         try {
-            return $this->render('class.java.twig', ['obj' => $obj]);
+            return $this->render('class.java.twig', ['obj' => $obj, 'rawJSONCode' => $request->request->get('obj')]);
         } catch (\Exception $e) {
             $response->setContent("not valid");
             return $response;

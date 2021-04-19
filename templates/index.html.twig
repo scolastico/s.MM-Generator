@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>s.MysqlManager Generator</title>
+    <meta name="twitter:title" content="s.MysqlManager Generator">
+    <meta property="og:type" content="website">
+    <meta name="twitter:description" content="Generate s.MysqlManager classes for your project.">
+    <meta name="twitter:card" content="summary">
+    <meta property="og:description" content="Generate s.MysqlManager classes for your project.">
+    <meta property="og:title" content="s.MysqlManager Generator">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+</head>
+
+<body style="margin-top: 25px;margin-bottom: 25px;margin-right: 25%;margin-left: 25%;">
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">s.MysqlManager Generator</h4>
+        <h6 class="text-muted card-subtitle mb-2">Generate your <a href="https://github.com/scolastico/s.MysqlManager/">s.MysqlManager</a>&nbsp;classes for your project!</h6>
+        <form>
+            <div class="form-row" style="margin-top: 50px;">
+                <div class="col col-md-2"><label class="col-form-label">Package Name:&nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-bss-tooltip="" title="Please write here where you want to place your generated class."></i></label></div>
+                <div class="col"><input {% if obj is defined %}value="{{ obj.className }}" {% endif %}class="form-control" type="text" id="package-name" placeholder="me.developer.databases"></div>
+            </div>
+            <div class="form-row" style="margin-top: 10px;">
+                <div class="col col-md-2"><label class="col-form-label">Table Name:&nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-bss-tooltip="" title="Please enter here your table name. It will be the same as the class name."></i></label></div>
+                <div class="col"><input {% if obj is defined %}value="{{ obj.packageName }}" {% endif %}class="form-control" type="text" id="table-name" placeholder="MyGreatTable"></div>
+            </div>
+            <div class="text-right" style="margin-top: 10px;"><button class="btn btn-primary" type="button" onclick="create();">Create Field</button></div>
+            <div class="card bg-secondary" style="margin-top: 10px;" id="fields">
+                {% if obj is defined %}
+                    {% set id = 0 %}
+                    {% for field in obj.fields %}
+                        <div class="card-body" id="{{ id }}">
+                            {% if id != 0 %}
+                            <div class="text-right"><button class="btn btn-danger" type="button" onclick="remove({{ id }});">Delete</button></div>
+                            {% endif %}
+                            <div class="form-row"{% if id != 0 %} style="margin-top: 10px;"{% endif %}>
+                                <div class="col col-md-2"><label class="col-form-label">Name:&nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-bss-tooltip="" title="The name of the value. Please write the name in camel case."></i></label></div>
+                                <div class="col"><input class="form-control" type="text" id="{{ id }}-name" placeholder="myGreatValue" value="{{ field.name }}"></div>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <div class="form-row">
+                                    <div class="col col-md-2"><label class="col-form-label">Type:</label></div>
+                                    <div class="col"><select value="{{ field.type }}" onchange="update({{ id }});" class="form-control" id="{{ id }}-type">
+                                            <option value="1"{% if field.type == "1" %} selected=""{% endif %}>String</option>
+                                            <option value="2"{% if field.type == "2" %} selected=""{% endif %}>Integer</option>
+                                            <option value="3"{% if field.type == "3" %} selected=""{% endif %}>Long</option>
+                                            <option value="4"{% if field.type == "4" %} selected=""{% endif %}>Double</option>
+                                            <option value="5"{% if field.type == "5" %} selected=""{% endif %}>Custom Object</option>
+                                        </select></div>
+                                </div>
+                            </div>
+                            <div id="{{ id }}-field-normal" {% if field.type == 5 %}class="d-none" {% endif %}style="margin-top: 10px;">
+                                <div class="form-row">
+                                    <div class="col col-md-2"><label class="col-form-label">Default Value:</label></div>
+                                    <div class="col">
+                                        <input {% if field.type == "1" %}value="{{ field.value }}" {% endif %}class="form-control" type="text" id="{{ id }}-string" placeholder="Some String">
+                                        <input {% if (field.type == "2") or (field.type == "3") or (field.type == "4") %}value="{{ field.value }}" {% endif %}class="form-control d-none" type="number" id="{{ id }}-number" placeholder="1234">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="{{ id }}-field-custom" {% if field.type != 5 %}class="d-none" {% endif %}style="margin-top: 10px;">
+                                <div class="form-row">
+                                    <div class="col col-md-2"><label class="col-form-label">Package Name:</label></div>
+                                    <div class="col"><input {% if field.type == "5" %}value="{{ field.package }}" {% endif %}class="form-control" type="text" id="{{ id }}-package" placeholder="me.developer.dataholders"></div>
+                                </div>
+                                <div class="form-row" style="margin-top: 10px;">
+                                    <div class="col col-md-2"><label class="col-form-label">Class Name:</label></div>
+                                    <div class="col"><input {% if field.type == "5" %}value="{{ field.class }}" {% endif %}class="form-control" type="text" id="{{ id }}-class" placeholder="MyExternalDataHolder"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {% set id = id + 1 %}
+                    {% endfor %}
+                {% else %}
+                    <div class="card-body" id="0">
+                        <div class="form-row">
+                            <div class="col col-md-2"><label class="col-form-label">Name:&nbsp;<i class="fa fa-question-circle" data-toggle="tooltip" data-bss-tooltip="" title="The name of the value. Please write the name in camel case."></i></label></div>
+                            <div class="col"><input class="form-control" type="text" id="0-name" placeholder="myGreatValue"></div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div class="form-row">
+                                <div class="col col-md-2"><label class="col-form-label">Type:</label></div>
+                                <div class="col"><select onchange="update(0);" class="form-control" id="0-type">
+                                        <option value="1" selected="">String</option>
+                                        <option value="2">Integer</option>
+                                        <option value="3">Long</option>
+                                        <option value="4">Double</option>
+                                        <option value="5">Custom Object</option>
+                                    </select></div>
+                            </div>
+                        </div>
+                        <div id="0-field-normal" style="margin-top: 10px;">
+                            <div class="form-row">
+                                <div class="col col-md-2"><label class="col-form-label">Default Value:</label></div>
+                                <div class="col">
+                                    <input class="form-control" type="text" id="0-string" placeholder="Some String">
+                                    <input class="form-control d-none" type="number" id="0-number" placeholder="1234">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="0-field-custom" class="d-none" style="margin-top: 10px;">
+                            <div class="form-row">
+                                <div class="col col-md-2"><label class="col-form-label">Package Name:</label></div>
+                                <div class="col"><input class="form-control" type="text" id="0-package" placeholder="me.developer.dataholders"></div>
+                            </div>
+                            <div class="form-row" style="margin-top: 10px;">
+                                <div class="col col-md-2"><label class="col-form-label">Class Name:</label></div>
+                                <div class="col"><input class="form-control" type="text" id="0-class" placeholder="MyExternalDataHolder"></div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="text-right" style="margin-top: 10px;">
+                <div class="form-row">
+                    <div class="col">
+                        <form action="javascript:void(0);">
+                            <div class="form-row">
+                                <div class="col col-md-2"><button onclick="startImport(); return false;" class="btn btn-info" type="button">Import</button></div>
+                                <div class="col"><input class="form-control-file" type="file" id="classFile" name="classFile"></div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col col-md-4"><button class="btn btn-success" type="button" style="margin-left: 10px;" onclick="generate();">Download Class</button></div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/js/script.min.js"></script>
+<script src="assets/js/main.js"></script>
+{% if id is defined %}
+<script>
+    currentId = {{ id }}
+</script>
+{% endif %}
+</body>
+
+</html>

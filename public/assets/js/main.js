@@ -1,5 +1,29 @@
 let currentId = 1;
 const fields = document.getElementById('fields');
+const classFile = document.getElementById('classFile');
+
+function startImport() {
+    if (classFile.files.length === 0) {
+        alert("No file selected!");
+        return;
+    }
+    const selectedFile = classFile.files[0];
+    try {
+        let reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                window.open('?obj=' + encodeURIComponent(event.target.result.split('--START BACKUP CODE--')[1].split('--END BACKUP CODE--')[0]), '_blank');
+            } catch (e) {
+                alert("Error while reading your file!")
+                console.warn("Error while reading your file!", e);
+            }
+        };
+        reader.readAsText(selectedFile);
+    } catch (e) {
+        alert("Error while reading your file!")
+        console.warn("Error while reading your file!", e);
+    }
+}
 
 function generateCard(id) {
     let element = document.createElement("div");

@@ -13,8 +13,14 @@ class IndexController extends AbstractController
      */
     public function index(): Response
     {
-        return $this->render('index/index.html.twig', [
-            'controller_name' => 'IndexController',
-        ]);
+        if (isset($_GET) && isset($_GET['obj'])) {
+            try {
+                $obj = json_decode($_GET['obj']);
+                return $this->render('index.html.twig', ['obj' => $obj]);
+            } catch (\Exception $e) {
+                die("Error while import...");
+            }
+        }
+        return $this->render('index.html.twig');
     }
 }
