@@ -60,7 +60,7 @@
                                     <div class="col col-md-2"><label class="col-form-label">Default Value:</label></div>
                                     <div class="col">
                                         <input {% if field.type == "1" %}value="{{ field.value }}" {% endif %}class="form-control{% if field.type != "1" %} d-none{% endif %}" type="text" id="{{ id }}-string" placeholder="Some String">
-                                        <input {% if (field.type != "1") and (field.type != "5") %}value="{{ field.value }}" {% endif %}class="form-control{% if (field.type != "1") and (field.type != "5") %} d-none{% endif %}" type="number" id="{{ id }}-number" placeholder="1234">
+                                        <input {% if (field.type != "1") and (field.type != "5") %}value="{{ field.value }}" {% endif %}class="form-control{% if (field.type == "1") or (field.type == "5") %} d-none{% endif %}" type="number" id="{{ id }}-number" placeholder="1234">
                                     </div>
                                 </div>
                             </div>
