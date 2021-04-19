@@ -47,11 +47,11 @@
                                 <div class="form-row">
                                     <div class="col col-md-2"><label class="col-form-label">Type:</label></div>
                                     <div class="col"><select value="{{ field.type }}" onchange="update({{ id }});" class="form-control" id="{{ id }}-type">
-                                            <option value="1"{% if field.type == "1" %} selected=""{% endif %}>String</option>
-                                            <option value="2"{% if field.type == "2" %} selected=""{% endif %}>Integer</option>
-                                            <option value="3"{% if field.type == "3" %} selected=""{% endif %}>Long</option>
-                                            <option value="4"{% if field.type == "4" %} selected=""{% endif %}>Double</option>
-                                            <option value="5"{% if field.type == "5" %} selected=""{% endif %}>Custom Object</option>
+                                            <option value="1"{% if field.type == 1 %} selected=""{% endif %}>String</option>
+                                            <option value="2"{% if field.type == 2 %} selected=""{% endif %}>Integer</option>
+                                            <option value="3"{% if field.type == 3 %} selected=""{% endif %}>Long</option>
+                                            <option value="4"{% if field.type == 4 %} selected=""{% endif %}>Double</option>
+                                            <option value="5"{% if field.type == 5 %} selected=""{% endif %}>Custom Object</option>
                                         </select></div>
                                 </div>
                             </div>
@@ -59,19 +59,19 @@
                                 <div class="form-row">
                                     <div class="col col-md-2"><label class="col-form-label">Default Value:</label></div>
                                     <div class="col">
-                                        <input {% if field.type == "1" %}value="{{ field.value }}" {% endif %}class="form-control{% if field.type != "1" %} d-none{% endif %}" type="text" id="{{ id }}-string" placeholder="Some String">
-                                        <input {% if (field.type != "1") and (field.type != "5") %}value="{{ field.value }}" {% endif %}class="form-control{% if (field.type == "1") or (field.type == "5") %} d-none{% endif %}" type="number" id="{{ id }}-number" placeholder="1234">
+                                        <input {% if field.type == 1 %}value="{{ field.value }}" {% endif %}class="form-control{% if field.type != 1 %} d-none{% endif %}" type="text" id="{{ id }}-string" placeholder="Some String">
+                                        <input {% if (field.type != 1) and (field.type != 5) %}value="{{ field.value }}" {% endif %}class="form-control{% if (field.type == 1) or (field.type == 5) %} d-none{% endif %}" type="number" id="{{ id }}-number" placeholder="1234">
                                     </div>
                                 </div>
                             </div>
                             <div id="{{ id }}-field-custom" {% if field.type != 5 %}class="d-none" {% endif %}style="margin-top: 10px;">
                                 <div class="form-row">
                                     <div class="col col-md-2"><label class="col-form-label">Package Name:</label></div>
-                                    <div class="col"><input {% if field.type == "5" %}value="{{ field.package }}" {% endif %}class="form-control" type="text" id="{{ id }}-package" placeholder="me.developer.dataholders"></div>
+                                    <div class="col"><input {% if field.type == 5 %}value="{{ field.package }}" {% endif %}class="form-control" type="text" id="{{ id }}-package" placeholder="me.developer.dataholders"></div>
                                 </div>
                                 <div class="form-row" style="margin-top: 10px;">
                                     <div class="col col-md-2"><label class="col-form-label">Class Name:</label></div>
-                                    <div class="col"><input {% if field.type == "5" %}value="{{ field.class }}" {% endif %}class="form-control" type="text" id="{{ id }}-class" placeholder="MyExternalDataHolder"></div>
+                                    <div class="col"><input {% if field.type == 5 %}value="{{ field.class }}" {% endif %}class="form-control" type="text" id="{{ id }}-class" placeholder="MyExternalDataHolder"></div>
                                 </div>
                             </div>
                         </div>
